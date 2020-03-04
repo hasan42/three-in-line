@@ -20,6 +20,8 @@ export class GameService {
 
   constructor() {
     this.generateArea()
+    this.checkAreaColor();
+    this.moveTile();
   }
 
   getRandomColor(){
@@ -50,6 +52,7 @@ export class GameService {
       this.compareItem = { x, y, color }
       this.replaceItems();
       this.checkAreaColor();
+      this.moveTile();
     }
   }
 
@@ -150,5 +153,38 @@ export class GameService {
       let hidden = this.getIndexItemByCoords(el.x,el.y);
       this.items[hidden].color = null;
     });
+  }
+
+  moveTile(){
+    let tempLine = [];
+    let tempArr = [];
+    for (let i = 0; i <= this.areaSize; i++) {
+      tempLine = [];
+
+      for (let j = 0; j <= this.areaSize; j++) {
+        let tileColor = this.getIndexItemByCoords(i,j);
+        if(this.items[tileColor].color !== null){
+          let item = {x: i, y: j, color:this.items[tileColor].color};
+          tempLine.push(item);
+        }
+      }
+
+      if(tempLine.length !== this.areaSize+1 ){
+        let needAddTile = this.areaSize - tempLine.length;
+        for (let m = 0; m <= needAddTile; m++) {
+          let color = this.getRandomColor();
+          let item = {x: i, y: m, color:color};
+          tempLine.unshift(item);
+        }
+        tempLine.forEach((el,idx)=>{
+          el.y = idx;
+        });
+      }
+      tempArr.push(tempLine);
+    }
+    tempArr = tempArr.flat();
+    this.items = tempArr;
+    this.observableItems.next(this.items);
+    console.log(tempArr);
   }
 }
