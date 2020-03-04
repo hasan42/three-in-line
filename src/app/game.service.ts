@@ -15,7 +15,8 @@ export class GameService {
 
   selectItem: any = null;
   compareItem: any = null;
-  comapreArr: any = [];
+  comapreArrX: any = [];
+  comapreArrY: any = [];
 
   constructor() {
     this.generateArea()
@@ -80,22 +81,24 @@ export class GameService {
     let arr = []
     this.items.forEach(el=>{
       if(el.color){
+        this.checkOnX(el.x,el.y,el.color);
         this.checkOnY(el.x,el.y,el.color);
-          console.log(this.comapreArr);
-        if(this.comapreArr.length >= 3){
-          this.hideColor();
-          this.comapreArr = [];
-        }else{
-          this.comapreArr = [];
+        if(this.comapreArrX.length >= 3){
+          console.log(this.comapreArrX, this.comapreArrY);
+          this.hideColorX();
         }
+        if(this.comapreArrY.length >= 3){
+          console.log(this.comapreArrX, this.comapreArrY);
+          this.hideColorY();
+        }
+        this.comapreArrY = [];
+        this.comapreArrX = [];
       }
     });
   }
   checkOnY(x,y,color){
-    // console.log(x,y,color);
     let arr = [
       { x:x, y:y+1, active:null },
-      // { x:x, y:y, active:null },
       { x:x, y:y-1, active:null }
     ];
     arr.forEach(el=>{
@@ -103,28 +106,47 @@ export class GameService {
         let compare = this.getIndexItemByCoords(el.x,el.y);
         if(color === this.items[compare].color){
           el.active = true;
-          let find = this.comapreArr.find(elf=>elf.x===el.x && elf.y===el.y );
+          let find = this.comapreArrY.find(elf=>elf.x===el.x && elf.y===el.y );
           if(!find){
-            this.comapreArr.push({x:el.x,y:el.y});
+            this.comapreArrY.push({x:el.x,y:el.y});
             this.checkOnY(el.x,el.y,color);
           }
         }else{
           el.active = false;
         }
       }
-      
     });
   }
-  checkOnX(x,y){
+  checkOnX(x,y,color){
     let arr = [
       { x:x+1, y:y, active:null },
-      { x:x, y:y, active:null },
       { x:x-1, y:y, active:null }
     ];
+    arr.forEach(el=>{
+      if(el.x>=0 && el.x<=this.areaSize && el.y>=0 && el.y<=this.areaSize ){
+        let compare = this.getIndexItemByCoords(el.x,el.y);
+        if(color === this.items[compare].color){
+          el.active = true;
+          let find = this.comapreArrX.find(elf=>elf.x===el.x && elf.y===el.y );
+          if(!find){
+            this.comapreArrX.push({x:el.x,y:el.y});
+            this.checkOnX(el.x,el.y,color);
+          }
+        }else{
+          el.active = false;
+        }
+      }
+    });
   }
 
-  hideColor(){
-    this.comapreArr.forEach(el=>{
+  hideColorX(){
+    this.comapreArrX.forEach(el=>{
+      let hidden = this.getIndexItemByCoords(el.x,el.y);
+      this.items[hidden].color = null;
+    });
+  }
+  hideColorY(){
+    this.comapreArrY.forEach(el=>{
       let hidden = this.getIndexItemByCoords(el.x,el.y);
       this.items[hidden].color = null;
     });
