@@ -6,7 +6,8 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 })
 export class GameService {
 
-  colors: any = ["yellow", "red", "green", "blue", "orange"];
+  colors: any = ["yellow", "red", "green", "blue", "orange", "aqua"];
+  freeColor: string = "white";
   areaSize: number = 8;
 
   items: any = [];
@@ -21,7 +22,6 @@ export class GameService {
   constructor() {
     this.generateArea()
     this.checkAreaColor();
-    this.moveTile();
   }
 
   getRandomColor(){
@@ -50,13 +50,12 @@ export class GameService {
       this.selectItem = { x, y, color }
     }else{
       this.compareItem = { x, y, color }
-      this.replaceItems();
+      this.replaceTile();
       this.checkAreaColor();
-      this.moveTile();
     }
   }
 
-  replaceItems(){
+  replaceTile(){
     if( this.canReplace() ){
       let firstItem = this.getIndexItemByCoords(this.selectItem.x, this.selectItem.y )
       let secondItem = this.getIndexItemByCoords(this.compareItem.x, this.compareItem.y )
@@ -87,17 +86,16 @@ export class GameService {
         this.checkOnX(el.x,el.y,el.color);
         this.checkOnY(el.x,el.y,el.color);
         if(this.comapreArrX.length >= 3){
-          console.log(this.comapreArrX, this.comapreArrY);
           this.hideColorX();
         }
         if(this.comapreArrY.length >= 3){
-          console.log(this.comapreArrX, this.comapreArrY);
           this.hideColorY();
         }
         this.comapreArrY = [];
         this.comapreArrX = [];
       }
     });
+    this.checkFreeTile();
   }
   checkOnY(x,y,color){
     let arr = [
@@ -107,7 +105,7 @@ export class GameService {
     arr.forEach(el=>{
       if(el.x>=0 && el.x<=this.areaSize && el.y>=0 && el.y<=this.areaSize ){
         let compare = this.getIndexItemByCoords(el.x,el.y);
-        if(this.items[compare].color){
+        if(this.items[compare].color !== this.freeColor){
           if(color === this.items[compare].color){
             el.active = true;
             let find = this.comapreArrY.find(elf=>elf.x===el.x && elf.y===el.y );
@@ -131,7 +129,7 @@ export class GameService {
     arr.forEach(el=>{
       if(el.x>=0 && el.x<=this.areaSize && el.y>=0 && el.y<=this.areaSize ){
         let compare = this.getIndexItemByCoords(el.x,el.y);
-        if(this.items[compare].color){
+        if(this.items[compare].color !== this.freeColor){
           if(color === this.items[compare].color){
             el.active = true;
             let find = this.comapreArrX.find(elf=>elf.x===el.x && elf.y===el.y );
@@ -151,17 +149,29 @@ export class GameService {
   hideColorX(){
     this.comapreArrX.forEach(el=>{
       let hidden = this.getIndexItemByCoords(el.x,el.y);
-      this.items[hidden].color = null;
+      this.items[hidden].color = this.freeColor;
     });
   }
   hideColorY(){
     this.comapreArrY.forEach(el=>{
       let hidden = this.getIndexItemByCoords(el.x,el.y);
-      this.items[hidden].color = null;
+      this.items[hidden].color = this.freeColor;
     });
   }
 
-  moveTile(){
+  checkFreeTile(){
+    let nullTile = this.items.filter(el=>el.color===this.freeColor)
+    // console.log(nullTile);
+    if(nullTile.length > 0){
+      console.log('move');
+      this.moveTileOnFreeSpace();
+    }else{
+
+      console.log('no move');
+    }
+  }
+
+  moveTileOnFreeSpace(){
     let tempLine = [];
     let tempArr: Array<any> = [];
     for (let i = 0; i <= this.areaSize; i++) {
@@ -169,7 +179,7 @@ export class GameService {
 
       for (let j = 0; j <= this.areaSize; j++) {
         let tileColor = this.getIndexItemByCoords(j,i);
-        if(this.items[tileColor].color !== null){
+        if(this.items[tileColor].color !== this.freeColor){
           let item = {x: j, y: i, color:this.items[tileColor].color};
           tempLine.push(item);
         }
@@ -197,10 +207,13 @@ export class GameService {
       if(keyA > keyB) return 1;
       return 0;
     });
-      console.log(this.items);
-      console.log(tempArr);
+      // console.log(this.items);
+      // console.log(tempArr);
     this.items = tempArr;
     this.observableItems.next(this.items);
     // console.log(tempArr);
+    this.checkAreaColor();
   }
+
+
 }
