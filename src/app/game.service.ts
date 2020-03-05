@@ -107,16 +107,19 @@ export class GameService {
     arr.forEach(el=>{
       if(el.x>=0 && el.x<=this.areaSize && el.y>=0 && el.y<=this.areaSize ){
         let compare = this.getIndexItemByCoords(el.x,el.y);
-        if(color === this.items[compare].color){
-          el.active = true;
-          let find = this.comapreArrY.find(elf=>elf.x===el.x && elf.y===el.y );
-          if(!find){
-            this.comapreArrY.push({x:el.x,y:el.y});
-            this.checkOnY(el.x,el.y,color);
+        if(this.items[compare].color){
+          if(color === this.items[compare].color){
+            el.active = true;
+            let find = this.comapreArrY.find(elf=>elf.x===el.x && elf.y===el.y );
+            if(!find){
+              this.comapreArrY.push({x:el.x,y:el.y});
+              this.checkOnY(el.x,el.y,color);
+            }
+          }else{
+            el.active = false;
           }
-        }else{
-          el.active = false;
         }
+        
       }
     });
   }
@@ -128,16 +131,19 @@ export class GameService {
     arr.forEach(el=>{
       if(el.x>=0 && el.x<=this.areaSize && el.y>=0 && el.y<=this.areaSize ){
         let compare = this.getIndexItemByCoords(el.x,el.y);
-        if(color === this.items[compare].color){
-          el.active = true;
-          let find = this.comapreArrX.find(elf=>elf.x===el.x && elf.y===el.y );
-          if(!find){
-            this.comapreArrX.push({x:el.x,y:el.y});
-            this.checkOnX(el.x,el.y,color);
+        if(this.items[compare].color){
+          if(color === this.items[compare].color){
+            el.active = true;
+            let find = this.comapreArrX.find(elf=>elf.x===el.x && elf.y===el.y );
+            if(!find){
+              this.comapreArrX.push({x:el.x,y:el.y});
+              this.checkOnX(el.x,el.y,color);
+            }
+          }else{
+            el.active = false;
           }
-        }else{
-          el.active = false;
         }
+        
       }
     });
   }
@@ -157,14 +163,14 @@ export class GameService {
 
   moveTile(){
     let tempLine = [];
-    let tempArr = [];
+    let tempArr: Array<any> = [];
     for (let i = 0; i <= this.areaSize; i++) {
       tempLine = [];
 
       for (let j = 0; j <= this.areaSize; j++) {
-        let tileColor = this.getIndexItemByCoords(i,j);
+        let tileColor = this.getIndexItemByCoords(j,i);
         if(this.items[tileColor].color !== null){
-          let item = {x: i, y: j, color:this.items[tileColor].color};
+          let item = {x: j, y: i, color:this.items[tileColor].color};
           tempLine.push(item);
         }
       }
@@ -173,18 +179,28 @@ export class GameService {
         let needAddTile = this.areaSize - tempLine.length;
         for (let m = 0; m <= needAddTile; m++) {
           let color = this.getRandomColor();
-          let item = {x: i, y: m, color:color};
+          let item = {x: m, y: i, color:color};
           tempLine.unshift(item);
         }
         tempLine.forEach((el,idx)=>{
-          el.y = idx;
+          el.x = idx;
         });
       }
       tempArr.push(tempLine);
     }
     tempArr = tempArr.flat();
+    tempArr.sort((a, b)=>{
+      let keyA = a.x,
+          keyB = b.x;
+      // Compare the 2 dates
+      if(keyA < keyB) return -1;
+      if(keyA > keyB) return 1;
+      return 0;
+    });
+      console.log(this.items);
+      console.log(tempArr);
     this.items = tempArr;
     this.observableItems.next(this.items);
-    console.log(tempArr);
+    // console.log(tempArr);
   }
 }
