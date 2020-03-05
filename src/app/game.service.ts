@@ -14,6 +14,10 @@ export class GameService {
   observableItems = new BehaviorSubject<any[]>(this.items);
   items$ = this.observableItems.asObservable();
 
+  score: number = null;
+  observableScore = new BehaviorSubject<number>(this.score);
+  score$ = this.observableScore.asObservable();
+
   selectItem: any = null;
   compareItem: any = null;
   comapreArrX: any = [];
@@ -87,10 +91,13 @@ export class GameService {
         this.checkOnY(el.x,el.y,el.color);
         if(this.comapreArrX.length >= 3){
           this.hideColorX();
+          this.increaseScore(this.comapreArrX.length);
         }
         if(this.comapreArrY.length >= 3){
           this.hideColorY();
+          this.increaseScore(this.comapreArrY.length);
         }
+
         this.comapreArrY = [];
         this.comapreArrX = [];
       }
@@ -215,5 +222,8 @@ export class GameService {
     this.checkAreaColor();
   }
 
-
+  increaseScore(num){
+    this.score += num;
+    this.observableScore.next(this.score);
+  }
 }
