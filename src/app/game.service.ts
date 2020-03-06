@@ -35,8 +35,8 @@ export class GameService {
   generateArea(){
     for (let i = 0; i <= this.areaSize; i++) {
       for (let j = 0; j <= this.areaSize; j++) {
-        let color = this.getRandomColor();
-        let item = {x: i, y: j, color:color};
+        let color = this.getRandomColor(),
+            item = {x: i, y: j, color:color};
         this.items.push(item);
       }
     }
@@ -61,8 +61,8 @@ export class GameService {
 
   replaceTile(){
     if( this.canReplace() ){
-      let firstItem = this.getIndexItemByCoords(this.selectItem.x, this.selectItem.y )
-      let secondItem = this.getIndexItemByCoords(this.compareItem.x, this.compareItem.y )
+      let firstItem = this.getIndexItemByCoords(this.selectItem.x, this.selectItem.y ),
+          secondItem = this.getIndexItemByCoords(this.compareItem.x, this.compareItem.y )
 
       this.items[firstItem].color = this.compareItem.color;
       this.items[secondItem].color = this.selectItem.color;
@@ -72,10 +72,10 @@ export class GameService {
   }
 
   canReplace(): boolean {
-    let aX = this.selectItem.x;
-    let aY = this.selectItem.y;
-    let bX = this.compareItem.x;
-    let bY = this.compareItem.y;
+    let aX = this.selectItem.x,
+        aY = this.selectItem.y,
+        bX = this.compareItem.x,
+        bY = this.compareItem.y;
     if( (aX === bX && (aY === bY + 1 || aY === bY - 1)) || (aY === bY && (aX === bX + 1 || aX === bX - 1)) ){
       return true
     }else{
@@ -163,19 +163,14 @@ export class GameService {
 
   checkFreeTile(){
     let nullTile = this.items.filter(el=>el.color===this.freeColor)
-    // console.log(nullTile);
     if(nullTile.length > 0){
-      console.log('move');
       this.moveTileOnFreeSpace();
-    }else{
-
-      console.log('no move');
     }
   }
 
   moveTileOnFreeSpace(){
-    let tempLine = [];
-    let tempArr: Array<any> = [];
+    let tempLine = [],
+        tempArr: Array<any> = [];
     for (let i = 0; i <= this.areaSize; i++) {
       tempLine = [];
 
@@ -190,8 +185,8 @@ export class GameService {
       if(tempLine.length !== this.areaSize+1 ){
         let needAddTile = this.areaSize - tempLine.length;
         for (let m = 0; m <= needAddTile; m++) {
-          let color = this.getRandomColor();
-          let item = {x: m, y: i, color:color};
+          let color = this.getRandomColor(),
+              item = {x: m, y: i, color:color};
           tempLine.unshift(item);
         }
         tempLine.forEach((el,idx)=>{
@@ -204,16 +199,12 @@ export class GameService {
     tempArr.sort((a, b)=>{
       let keyA = a.x,
           keyB = b.x;
-      // Compare the 2 dates
       if(keyA < keyB) return -1;
       if(keyA > keyB) return 1;
       return 0;
     });
-      // console.log(this.items);
-      // console.log(tempArr);
     this.items = tempArr;
     this.observableItems.next(this.items);
-    // console.log(tempArr);
     this.checkAreaColor();
   }
 
