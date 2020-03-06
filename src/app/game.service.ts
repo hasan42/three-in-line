@@ -90,11 +90,11 @@ export class GameService {
         this.checkOnX(el.x,el.y,el.color);
         this.checkOnY(el.x,el.y,el.color);
         if(this.comapreArrX.length >= 3){
-          this.hideColorX();
+          this.hideColor('x');
           this.increaseScore(this.comapreArrX.length);
         }
         if(this.comapreArrY.length >= 3){
-          this.hideColorY();
+          this.hideColor('y');
           this.increaseScore(this.comapreArrY.length);
         }
 
@@ -153,14 +153,9 @@ export class GameService {
     });
   }
 
-  hideColorX(){
-    this.comapreArrX.forEach(el=>{
-      let hidden = this.getIndexItemByCoords(el.x,el.y);
-      this.items[hidden].color = this.freeColor;
-    });
-  }
-  hideColorY(){
-    this.comapreArrY.forEach(el=>{
+  hideColor(axis){
+    let comapreArr = axis === 'x' ? this.comapreArrX : this.comapreArrY;
+    comapreArr.forEach(el=>{
       let hidden = this.getIndexItemByCoords(el.x,el.y);
       this.items[hidden].color = this.freeColor;
     });
