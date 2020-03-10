@@ -87,8 +87,8 @@ export class GameService {
     let arr = []
     this.items.forEach(el=>{
       if(el.color){
-        this.checkOnX(el.x,el.y,el.color);
-        this.checkOnY(el.x,el.y,el.color);
+        this.checkOnAxis('x',el.x,el.y,el.color);
+        this.checkOnAxis('y',el.x,el.y,el.color);
         if(this.comapreArrX.length >= 3){
           this.hideColor('x');
           this.increaseScore(this.comapreArrX.length);
@@ -104,45 +104,36 @@ export class GameService {
     });
     this.checkFreeTile();
   }
-  checkOnY(x,y,color){
-    let arr = [
-      { x:x, y:y+1, active:null },
-      { x:x, y:y-1, active:null }
-    ];
+  checkOnAxis(axis,x,y,color){
+    let arr;
+
+    if(axis === 'y') {
+      arr = [
+        { x:x, y:y+1, active:null },
+        { x:x, y:y-1, active:null }
+      ];
+    }
+    if(axis === 'x') {
+      arr = [
+        { x:x+1, y:y, active:null },
+        { x:x-1, y:y, active:null }
+      ];
+    }
+
     arr.forEach(el=>{
       if(el.x>=0 && el.x<=this.areaSize && el.y>=0 && el.y<=this.areaSize ){
         let compare = this.getIndexItemByCoords(el.x,el.y);
         if(this.items[compare].color !== this.freeColor){
           if(color === this.items[compare].color){
             el.active = true;
-            let find = this.comapreArrY.find(elf=>elf.x===el.x && elf.y===el.y );
+            let find;
+            if(axis === 'y'){ find = this.comapreArrY.find(elf=>elf.x===el.x && elf.y===el.y ) }
+            if(axis === 'x'){ find = this.comapreArrX.find(elf=>elf.x===el.x && elf.y===el.y ) }
+
             if(!find){
-              this.comapreArrY.push({x:el.x,y:el.y});
-              this.checkOnY(el.x,el.y,color);
-            }
-          }else{
-            el.active = false;
-          }
-        }
-        
-      }
-    });
-  }
-  checkOnX(x,y,color){
-    let arr = [
-      { x:x+1, y:y, active:null },
-      { x:x-1, y:y, active:null }
-    ];
-    arr.forEach(el=>{
-      if(el.x>=0 && el.x<=this.areaSize && el.y>=0 && el.y<=this.areaSize ){
-        let compare = this.getIndexItemByCoords(el.x,el.y);
-        if(this.items[compare].color !== this.freeColor){
-          if(color === this.items[compare].color){
-            el.active = true;
-            let find = this.comapreArrX.find(elf=>elf.x===el.x && elf.y===el.y );
-            if(!find){
-              this.comapreArrX.push({x:el.x,y:el.y});
-              this.checkOnX(el.x,el.y,color);
+              if(axis === 'y'){ this.comapreArrY.push({x:el.x,y:el.y}) }
+              if(axis === 'x'){ this.comapreArrX.push({x:el.x,y:el.y}) }
+              this.checkOnAxis(axis,el.x,el.y,color);
             }
           }else{
             el.active = false;
