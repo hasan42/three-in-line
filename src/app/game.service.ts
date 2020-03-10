@@ -54,21 +54,34 @@ export class GameService {
       this.selectItem = { x, y, color }
     }else{
       this.compareItem = { x, y, color }
-      this.replaceTile();
+      if( this.canReplace() ){
+        this.changePlaceChecked('replace');
+      }
       this.checkAreaColor();
     }
   }
 
-  replaceTile(){
-    if( this.canReplace() ){
-      let firstItem = this.getIndexItemByCoords(this.selectItem.x, this.selectItem.y ),
-          secondItem = this.getIndexItemByCoords(this.compareItem.x, this.compareItem.y )
-
-      this.items[firstItem].color = this.compareItem.color;
-      this.items[secondItem].color = this.selectItem.color;
-    }
+  resetChecked(){
     this.selectItem = null;
     this.compareItem = null;
+  }
+
+  changePlaceChecked(place){
+    if(this.selectItem !== null){
+      console.log(place);
+      let firstItem = this.getIndexItemByCoords(this.selectItem.x, this.selectItem.y ),
+          secondItem = this.getIndexItemByCoords(this.compareItem.x, this.compareItem.y );
+
+      if(place === 'replace'){
+        this.items[firstItem].color = this.compareItem.color;
+        this.items[secondItem].color = this.selectItem.color;
+      }
+      if(place === 'comeback'){
+        this.items[firstItem].color = this.selectItem.color;
+        this.items[secondItem].color = this.compareItem.color;
+      }
+    }
+    
   }
 
   canReplace(): boolean {
@@ -89,9 +102,10 @@ export class GameService {
       if(el.color){
         this.checkOnAxis('x',el.x,el.y,el.color);
         this.checkOnAxis('y',el.x,el.y,el.color);
-        this.hideColor();
-        this.comapreArrY = [];
-        this.comapreArrX = [];
+        if(this.hideColor() === false){
+          this.changePlaceChecked('comeback');
+        }
+        this.resetChecked();
       }
     });
     this.checkFreeTile();
@@ -137,18 +151,28 @@ export class GameService {
   }
 
   hideColor(){
-    let comapreArr = [];
+    let compareArr = [];
     if(this.comapreArrX.length >= 3){
-      comapreArr = comapreArr.concat(this.comapreArrX);
+      compareArr = compareArr.concat(this.comapreArrX);
     }
     if(this.comapreArrY.length >= 3){
-      comapreArr = comapreArr.concat(this.comapreArrY);
+      compareArr = compareArr.concat(this.comapreArrY);
     }
-    this.increaseScore(comapreArr.length);
-    comapreArr.forEach(el=>{
-      let hidden = this.getIndexItemByCoords(el.x,el.y);
-      this.items[hidden].color = this.freeColor;
-    });
+    
+    this.comapreArrY = [];
+    this.comapreArrX = [];
+    if(compareArr.length >= 3){
+    console.log(compareArr);
+      this.increaseScore(compareArr.length);
+      compareArr.forEach(el=>{
+        let hidden = this.getIndexItemByCoords(el.x,el.y);
+        this.items[hidden].color = this.freeColor;
+      });
+      return true;
+    }else{
+    console.log('empty');
+      return false;
+    }
   }
 
   checkFreeTile(){
