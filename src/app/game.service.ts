@@ -89,15 +89,7 @@ export class GameService {
       if(el.color){
         this.checkOnAxis('x',el.x,el.y,el.color);
         this.checkOnAxis('y',el.x,el.y,el.color);
-        if(this.comapreArrX.length >= 3){
-          this.hideColor('x');
-          this.increaseScore(this.comapreArrX.length);
-        }
-        if(this.comapreArrY.length >= 3){
-          this.hideColor('y');
-          this.increaseScore(this.comapreArrY.length);
-        }
-
+        this.hideColor();
         this.comapreArrY = [];
         this.comapreArrX = [];
       }
@@ -144,8 +136,15 @@ export class GameService {
     });
   }
 
-  hideColor(axis){
-    let comapreArr = axis === 'x' ? this.comapreArrX : this.comapreArrY;
+  hideColor(){
+    let comapreArr = [];
+    if(this.comapreArrX.length >= 3){
+      comapreArr = comapreArr.concat(this.comapreArrX);
+    }
+    if(this.comapreArrY.length >= 3){
+      comapreArr = comapreArr.concat(this.comapreArrY);
+    }
+    this.increaseScore(comapreArr.length);
     comapreArr.forEach(el=>{
       let hidden = this.getIndexItemByCoords(el.x,el.y);
       this.items[hidden].color = this.freeColor;
