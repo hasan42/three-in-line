@@ -17,6 +17,7 @@ export class GameService {
   score: number = null;
   observableScore = new BehaviorSubject<number>(this.score);
   score$ = this.observableScore.asObservable();
+  scoreComare: number = null;
 
   selectItem: any = null;
   compareItem: any = null;
@@ -56,8 +57,13 @@ export class GameService {
       this.compareItem = { x, y, color }
       if( this.canReplace() ){
         this.changePlaceChecked('replace');
+        this.scoreComare = this.score;
+        this.checkAreaColor();
+        if(this.scoreComare === this.score){
+          this.changePlaceChecked('comeback');
+        }
       }
-      this.checkAreaColor();
+      this.resetChecked();
     }
   }
 
@@ -68,7 +74,6 @@ export class GameService {
 
   changePlaceChecked(place){
     if(this.selectItem !== null){
-      console.log(place);
       let firstItem = this.getIndexItemByCoords(this.selectItem.x, this.selectItem.y ),
           secondItem = this.getIndexItemByCoords(this.compareItem.x, this.compareItem.y );
 
@@ -102,10 +107,7 @@ export class GameService {
       if(el.color){
         this.checkOnAxis('x',el.x,el.y,el.color);
         this.checkOnAxis('y',el.x,el.y,el.color);
-        if(this.hideColor() === false){
-          this.changePlaceChecked('comeback');
-        }
-        this.resetChecked();
+        this.hideColor();
       }
     });
     this.checkFreeTile();
@@ -162,7 +164,6 @@ export class GameService {
     this.comapreArrY = [];
     this.comapreArrX = [];
     if(compareArr.length >= 3){
-    console.log(compareArr);
       this.increaseScore(compareArr.length);
       compareArr.forEach(el=>{
         let hidden = this.getIndexItemByCoords(el.x,el.y);
@@ -170,7 +171,6 @@ export class GameService {
       });
       return true;
     }else{
-    console.log('empty');
       return false;
     }
   }
