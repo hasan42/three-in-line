@@ -37,7 +37,7 @@ export class GameService {
     for (let i = 0; i <= this.areaSize; i++) {
       for (let j = 0; j <= this.areaSize; j++) {
         let color = this.getRandomColor(),
-            item = {x: i, y: j, color:color};
+            item = { x: i, y: j, color:color, selected: false };
         this.items.push(item);
       }
     }
@@ -53,8 +53,12 @@ export class GameService {
   onClickTile(x, y, color){
     if(this.selectItem === null){
       this.selectItem = { x, y, color }
+      let firstItem = this.getIndexItemByCoords(x, y);
+      this.items[firstItem].selected = true;
     }else{
       this.compareItem = { x, y, color }
+      let secondItem = this.getIndexItemByCoords(x, y);
+      this.items[secondItem].selected = true;
       if( this.canReplace() ){
         this.changePlaceChecked('replace');
         this.scoreComare = this.score;
@@ -68,6 +72,13 @@ export class GameService {
   }
 
   resetChecked(){
+    if(this.selectItem !== null){
+      let firstItem = this.getIndexItemByCoords(this.selectItem.x, this.selectItem.y ),
+          secondItem = this.getIndexItemByCoords(this.compareItem.x, this.compareItem.y );
+
+      this.items[firstItem].selected = false;
+      this.items[secondItem].selected = false;
+    }
     this.selectItem = null;
     this.compareItem = null;
   }
@@ -191,7 +202,7 @@ export class GameService {
       for (let j = 0; j <= this.areaSize; j++) {
         let tileColor = this.getIndexItemByCoords(j,i);
         if(this.items[tileColor].color !== this.freeColor){
-          let item = {x: j, y: i, color:this.items[tileColor].color};
+          let item = { x: j, y: i, color:this.items[tileColor].color, selected: false };
           tempLine.push(item);
         }
       }

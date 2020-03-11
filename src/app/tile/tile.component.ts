@@ -11,6 +11,7 @@ export class TileComponent implements OnInit {
   @Input() x: number;
   @Input() y: number;
   @Input() color: string;
+  @Input() selected: boolean;
 
   constructor(private service: GameService) { }
 
