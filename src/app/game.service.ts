@@ -25,7 +25,15 @@ export class GameService {
   comapreArrY: any = [];
 
   constructor() {
-    this.generateArea()
+    this.newGame();
+  }
+
+  newGame(){
+    this.score = null;
+    this.items = [];
+    this.selectItem = null;
+    this.compareItem = null;
+    this.generateArea();
     this.checkAreaColor();
   }
 

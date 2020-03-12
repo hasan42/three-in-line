@@ -24,4 +24,8 @@ export class StatComponent implements OnInit {
       );
   }
 
+  onClickNewGame(){
+    this.service.newGame();
+  }
+
 }
