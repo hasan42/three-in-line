@@ -17,6 +17,7 @@
   border-radius: 50%;
   transition: all .3s 0s;
   overflow: hidden;
+  cursor: pointer;
 
   &:before {
     content: '';

@@ -226,9 +226,9 @@ export class GameService {
           el.x = idx;
         });
       }
-      tempArr.push(tempLine);
+      tempArr = tempArr.concat(tempLine);
     }
-    tempArr = tempArr.flat();
+    // tempArr = tempArr.flat();
     tempArr.sort((a, b)=>{
       let keyA = a.x,
           keyB = b.x;
