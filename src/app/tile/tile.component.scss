@@ -74,3 +74,36 @@
     left: 100%;
   }
 }
+@media screen and (max-width: 600px) {
+  .tile {
+    width: 40px;
+    height: 40px;
+    &.selected {
+      opacity: 0.75;
+    }
+    &.yellow{
+      background-color: #FFFF66;
+      box-shadow: none;
+    }
+    &.red{
+      background-color: #DC143C;
+      box-shadow: none;
+    }
+    &.green{
+      background-color: #32CD32;
+      box-shadow: none;
+    }
+    &.blue{
+      background-color: #3549c1;
+      box-shadow: none;
+    }
+    &.orange{
+      background-color: #FF7F50;
+      box-shadow: none;
+    }
+    &.aqua{
+      background-color: #00CED1;
+      box-shadow: none;
+    }
+  }
+}

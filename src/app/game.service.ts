@@ -6,7 +6,7 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 })
 export class GameService {
 
-  colors: any = ["yellow", "red", "green", "blue", "orange", "aqua"];
+  colors: any = ["yellow", "red", "green", "aqua", "blue", "orange"];
   freeColor: string = "white";
   areaSize: number = 8;
 
@@ -25,6 +25,13 @@ export class GameService {
   comapreArrY: any = [];
 
   constructor() {
+    let intViewportWidth = window.innerWidth;
+      console.log(intViewportWidth, this.areaSize, this.colors);
+    if(intViewportWidth <= 600) {
+      this.areaSize = 5
+      this.colors.splice(-2,2)
+      console.log(intViewportWidth, this.areaSize, this.colors);
+    }
     this.newGame();
   }
 

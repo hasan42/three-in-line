@@ -6,3 +6,8 @@
   width: 530px;
   margin: 0 auto;
 }
+@media screen and (max-width: 600px) {
+  .wrap {
+    width: 360px;
+  }
+}
