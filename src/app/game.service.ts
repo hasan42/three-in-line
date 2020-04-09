@@ -136,7 +136,8 @@ export class GameService {
         this.hideColor();
       }
     });
-    this.checkFreeTile();
+    setTimeout( ()=>{this.checkFreeTile();} ,500);
+    
   }
   checkOnAxis(axis,x,y,color){
     let arr;
@@ -243,9 +244,17 @@ export class GameService {
       if(keyA > keyB) return 1;
       return 0;
     });
-    this.items = tempArr;
+    // this.items = tempArr;
+
+    this.items.forEach((el)=>{
+      const color = tempArr.find(elf=>elf.x===el.x && elf.y===el.y ).color;
+      if(el.color !== color) 
+        el.color = color;
+    })
+
     this.observableItems.next(this.items);
-    this.checkAreaColor();
+    setTimeout( ()=>{this.checkAreaColor()} ,500);
+    // ;
   }
 
   increaseScore(num){
