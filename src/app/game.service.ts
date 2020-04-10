@@ -28,11 +28,7 @@ export class GameService {
   comapreArrX: any = [];
   comapreArrY: any = [];
 
-  
-
   constructor() {
-    let intViewportWidth = window.innerWidth;
-    
     this.newGame();
   }
 
@@ -40,7 +36,9 @@ export class GameService {
     if(window.innerWidth <= 600) {
       this.nowMobile = true;
       this.areaSize = 5
-      this.colors.splice(-2,2)
+      if(this.colors.length > 4){
+        this.colors.splice(-2,2)
+      }
     }else{
       this.nowMobile = false;
       this.areaSize = this.defaultAreaSize;
