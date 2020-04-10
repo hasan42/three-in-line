@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, HostListener } from '@angular/core';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -6,9 +6,13 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 })
 export class GameService {
 
-  colors: any = ["yellow", "red", "green", "aqua", "blue", "orange"];
-  freeColor: string = "white";
-  areaSize: number = 8;
+  nowMobile = false;
+
+  defaultColor:any = ["yellow", "red", "green", "aqua", "blue", "orange"];
+  colors: any = this.defaultColor.slice();
+  freeColor: string = "black";
+  defaultAreaSize: number = 8;
+  areaSize: number = this.defaultAreaSize;
 
   items: any = [];
   observableItems = new BehaviorSubject<any[]>(this.items);
@@ -24,24 +28,35 @@ export class GameService {
   comapreArrX: any = [];
   comapreArrY: any = [];
 
+  
+
   constructor() {
     let intViewportWidth = window.innerWidth;
-      console.log(intViewportWidth, this.areaSize, this.colors);
-    if(intViewportWidth <= 600) {
-      this.areaSize = 5
-      this.colors.splice(-2,2)
-      console.log(intViewportWidth, this.areaSize, this.colors);
-    }
+    
     this.newGame();
   }
 
+  setMobileOrDesctopSettings(){
+    if(window.innerWidth <= 600) {
+      this.nowMobile = true;
+      this.areaSize = 5
+      this.colors.splice(-2,2)
+    }else{
+      this.nowMobile = false;
+      this.areaSize = this.defaultAreaSize;
+      this.colors = this.defaultColor.slice();
+    }
+  }
+
   newGame(){
-    this.score = null;
+    this.setMobileOrDesctopSettings();
+    this.score = 0;
     this.items = [];
     this.selectItem = null;
     this.compareItem = null;
     this.generateArea();
     this.checkAreaColor();
+    setTimeout(()=>{this.score = null;},600);
   }
 
   getRandomColor(){

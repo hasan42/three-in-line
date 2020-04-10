@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { GameService } from '../game.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { take, finalize } from 'rxjs/operators';
@@ -12,6 +12,14 @@ export class AreaComponent implements OnInit {
 
   items: any;
   private subscription: Subscription;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    const currentWidthMobile = event.target.innerWidth <= 600 ? true : false;
+    if(this.service.nowMobile !== currentWidthMobile){
+      this.service.newGame();
+    }
+  }
 
   constructor(private service: GameService) { }
 
